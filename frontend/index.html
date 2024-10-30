@@ -5,8 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bacchus</title>
     <link rel="stylesheet" href="stlye.css" />
+    <script>
+        async function fetchAuctions() {
+            try {
+                const response = await fetch('http://localhost:8080/data');
+                const auctions = await response.json();
+                displayAuctions(auctions);
+            } catch (error) {
+                console.error('Error fetching auctions:', error);
+            }
+        };
+
+function displayAuctions(auctions) {
+    const container = document.getElementById("auction-items");
+    container.innerHTML = "";
+    auctions.forEach(auction => {
+        const divTag = document.createElement("div");
+        divTag.className = "auction-item";
+        divTag.innerHTML = `
+            <h3>${auction.productName}</h3>
+            <p>Highest Bid: ${auction.highestBid || 0} EUR</p>
+            <p>Ends: ${new Date(auction.biddingEndDate).toLocaleString()}</p>
+        `;
+        container.appendChild(divTag);  
+        });
+    };
+
+    fetchAuctions();
+    </script>
 </head>
 <body>
+    <header>
+        <h1>Active Auctions</h1>
+    </header>
     
+    <main>
+        <div id="category">
+            <label for="categories">Categories</label>
+            <select id="categories">
+                <option value="All">All</option>
+            </select>
+        </div>
+
+            <div id="auction-items">
+
+            </div>
+        </main>
+    
+
+
+
+
+        </div>
+    </main>
 </body>
 </html>
