@@ -80,7 +80,6 @@
 
 function populateCategoryDropdown(auctions) {
     const categoryDropdown = document.getElementById("categories");
-    categoryDropdown.innerHTML = ""; 
 
     const categories = [...new Set(auctions.map(auction => auction.productCategory))];
 
@@ -93,7 +92,7 @@ function populateCategoryDropdown(auctions) {
 
     categoryDropdown.addEventListener("change", () => {
         const selectedCategory = categoryDropdown.value;
-        const filteredAuctions = selectedCategory === "all"
+        const filteredAuctions = selectedCategory === "All"
             ? auctions
             : auctions.filter(auction => auction.productCategory === selectedCategory);
         displayAuctions(filteredAuctions);
