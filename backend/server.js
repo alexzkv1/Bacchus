@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+require('dotenv').config()
 const { Pool } = require("pg");
 app = express();
 const port = 8080;
@@ -72,6 +73,10 @@ app.post("/place-bid", async (req, res) => {
 
     try {
         const numericBidAmount = Number(bidAmount);
+        if (isNaN(numericBidAmount) || numericBidAmount <= 0) {
+            return res.status(400).json({ error: "Invalid bid amount." });
+        }
+
         const checkResult = await pool.query(`
             SELECT highestbid
             FROM Bids
@@ -79,15 +84,20 @@ app.post("/place-bid", async (req, res) => {
         `, [auctionID, username]);
 
         if (checkResult.rows.length > 0) {
+            const existingBid = checkResult.rows[0].highestbid;
+            if (existingBid >= numericBidAmount) {
+                return res.status(400).json({ error: "Bid must be higher than the current highest bid." });
+            }
+
             const updateResult = await pool.query(`
                 UPDATE Bids
                 SET highestbid = $3
-                WHERE auctionid = $1 AND username = $2 AND highestBid < $3
+                WHERE auctionid = $1 AND username = $2
             `, [auctionID, username, numericBidAmount]);
             res.json({ message: "Bid updated successfully." });
         } else {
             const insertResult = await pool.query(`
-                INSERT INTO Bids (auctionid,  username, highestbid)
+                INSERT INTO Bids (auctionid, username, highestbid)
                 VALUES ($1, $2, $3)
             `, [auctionID, username, numericBidAmount]);
             res.json({ message: "Bid placed successfully." });
@@ -97,6 +107,7 @@ app.post("/place-bid", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 
 app.listen(port, () =>{
