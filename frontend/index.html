@@ -26,7 +26,6 @@
     
         <div id="bid-modal" class="modal">
             <div class="modal-content">
-                <span class="close">&times;</span>
                 <h2>Place Your Bid</h2>
                 <form id="bid-form">
                     <input type="text" id="username" placeholder="Your Full Name" required>
@@ -67,6 +66,7 @@
             divTag.innerHTML = `
                 <h3>${auction.productName}</h3>
                 <p>${auction.productCategory}</p>
+                <p>${auction.productDescription}</p>
                 <p>Ends: ${new Date(auction.biddingEndDate).toLocaleString()}</p>
                 <p id='auctionID'>Auction ID: ${auction.productId}</p>
                 <p>Highest Bid: €${auction.highestBid}</p> <!-- Display highest bid -->
@@ -84,12 +84,12 @@ function openBidModal(productId) {
     currentItem = productId;
     document.getElementById("bid-modal").style.display = "flex";
     document.getElementById('username').focus(); 
-}
+};
 
-    document.querySelector(".close").addEventListener("click", () => {
-    document.getElementById("bid-modal").style.display = "none"; 
-    document.getElementById('bid-form').reset(); 
-});
+function closeModal() {
+    document.getElementById("bid-modal").style.display = "none";
+    document.getElementById('bid-form').reset();
+};
 
 
 
@@ -116,9 +116,8 @@ document.getElementById('bid-modal').addEventListener('submit', async (e) => {
 
                 if (response.ok) {
                     alert('Bid submitted successfully!');
-                    fetchAuctions(); // Re-fetch auctions and update UI
-                    document.getElementById("bid-modal").style.display = "none"; // Close modal
-                    document.getElementById('bid-form').reset(); // Reset the form
+                    fetchAuctions(); 
+                    closeModal();
 
                 } else {
                     alert('Error submitting bid.');
@@ -128,6 +127,13 @@ document.getElementById('bid-modal').addEventListener('submit', async (e) => {
                 alert('Error submitting bid.');
             }
         });
+
+window.addEventListener('click', function(event) {
+const modal = document.getElementById("bid-modal");
+if (event.target === modal) {
+    closeModal();
+    }
+});
 
     
     fetchAuctions();
