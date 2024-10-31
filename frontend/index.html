@@ -5,34 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bacchus</title>
     <link rel="stylesheet" href="stlye.css" />
-    <script>
-        async function fetchAuctions() {
-            try {
-                const response = await fetch('http://localhost:8080/data');
-                const auctions = await response.json();
-                displayAuctions(auctions);
-            } catch (error) {
-                console.error('Error fetching auctions:', error);
-            }
-        };
-
-function displayAuctions(auctions) {
-    const container = document.getElementById("auction-items");
-    container.innerHTML = "";
-    auctions.forEach(auction => {
-        const divTag = document.createElement("div");
-        divTag.className = "auction-item";
-        divTag.innerHTML = `
-            <h3>${auction.productName}</h3>
-            <p>Highest Bid: ${auction.highestBid || 0} EUR</p>
-            <p>Ends: ${new Date(auction.biddingEndDate).toLocaleString()}</p>
-        `;
-        container.appendChild(divTag);  
-        });
-    };
-
-    fetchAuctions();
-    </script>
 </head>
 <body>
     <header>
@@ -40,10 +12,10 @@ function displayAuctions(auctions) {
     </header>
     
     <main>
-        <div id="category">
-            <label for="categories">Categories</label>
+        <div id="category-filter">
+            <label for="categories">Filter by Category:</label>
             <select id="categories">
-                <option value="All">All</option>
+                <option value="all">All</option>
             </select>
         </div>
 
@@ -52,11 +24,114 @@ function displayAuctions(auctions) {
             </div>
         </main>
     
-
-
-
-
+        <div id="bid-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Place Your Bid</h2>
+                <form id="bid-form">
+                    <input type="text" id="username" placeholder="Your Full Name" required>
+                    <input type="number" id="bidAmount" placeholder="Bid Amount (EUR)" required>
+                    <button id="submit">Place Bid</button>
+                </form>
+            </div>
         </div>
-    </main>
+
+
+    <script>
+        async function fetchAuctions() {
+            try {
+                const response = await fetch('http://localhost:8080/data');
+                const auctions = await response.json();
+                displayAuctions(auctions);
+
+                return auctions;
+            } catch (error) {
+                console.error('Error fetching auctions:', error);
+            };
+        }
+
+
+    function displayAuctions(auctions) {
+    const container = document.getElementById("auction-items");
+    container.innerHTML = "";
+
+    if (auctions.length === 0) {
+        container.innerHTML = "<h1>No auctions available</h1>";
+        return;
+    }
+
+    auctions.forEach(auction => {
+        if (new Date(auction.biddingEndDate) > new Date("2024-10-19T20:00:45Z")) {
+            const divTag = document.createElement("div");
+            divTag.className = "auction-item";
+            divTag.innerHTML = `
+                <h3>${auction.productName}</h3>
+                <p>${auction.productCategory}</p>
+                <p>Ends: ${new Date(auction.biddingEndDate).toLocaleString()}</p>
+                <p id='auctionID'>Auction ID: ${auction.productId}</p>
+                <p>Highest Bid: €${auction.highestBid}</p> <!-- Display highest bid -->
+                <button onclick='openBidModal("${auction.productId}")'>Place Bid</button>
+            `;
+            container.appendChild(divTag);
+        }
+    });
+}
+
+
+
+let currentItem;
+function openBidModal(productId) {
+    currentItem = productId;
+    document.getElementById("bid-modal").style.display = "flex";
+    document.getElementById('username').focus(); 
+}
+
+    document.querySelector(".close").addEventListener("click", () => {
+    document.getElementById("bid-modal").style.display = "none"; 
+    document.getElementById('bid-form').reset(); 
+});
+
+
+
+document.getElementById('bid-modal').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const auctionID = currentItem;
+            const bidAmount = document.getElementById('bidAmount').value;
+
+            const bidData = {
+                username,
+                auctionID,
+                bidAmount
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/place-bid', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(bidData)
+                });
+
+                if (response.ok) {
+                    alert('Bid submitted successfully!');
+                    fetchAuctions(); // Re-fetch auctions and update UI
+                    document.getElementById("bid-modal").style.display = "none"; // Close modal
+                    document.getElementById('bid-form').reset(); // Reset the form
+
+                } else {
+                    alert('Error submitting bid.');
+                }
+            } catch (error) {
+                console.error('Error submitting bid:', error);
+                alert('Error submitting bid.');
+            }
+        });
+
+    
+    fetchAuctions();
+    </script>
 </body>
 </html>
+
