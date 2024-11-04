@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import '../Page.css';
-import Card from '../components/Card'
+import './Page.css';
+import Card from './components/Card'
 
 function App() {
   const url = 'http://uptime-auction-api.azurewebsites.net/api/Auction';
@@ -11,11 +11,14 @@ function App() {
   useEffect(() =>{
     const fetchPosts = async () => {
       try{
+        setLoading(true);
         const response = await fetch('http://localhost:5000/data');
         const auctionData = await response.json();
         setAuctions(auctionData)
       } catch(err){
         setErrror(err);
+      } finally{
+        setLoading(false);
       }
     }
     fetchPosts();
@@ -25,11 +28,10 @@ function App() {
     return (<div className="hero bg-base-200 min-h-screen">
       <div className="hero-content text-center">
         <div className="max-w-md">
-          <h1 className="text-5xl font-bold">Hello there</h1>
-          <p className="py-6">
-            Loading...
-          </p>
-          <button className="btn btn-primary">Get Started</button>
+          <p className="text-5xl font-bold">Wait a second!</p>
+          <h2 className="py-6">
+            Loading    <span className="loading loading-spinner loading-md"></span>
+          </h2>
         </div>
       </div>
     </div>);
@@ -39,7 +41,7 @@ function App() {
     return (<div className="hero bg-base-200 min-h-screen">
     <div className="hero-content text-center">
       <div className="max-w-md">
-        <h1 className="text-5xl font-bold">Hello there</h1>
+        <h1 className="text-5xl font-bold">Oops....</h1>
         <p className="py-6">
           Something went wrong!
         </p>
@@ -50,7 +52,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Bacchus Auctions</h1>
+      <p className='text-5xl mt-5'>Bacchus Auctions</p>
       <Card auctions={auctions}/>
     </div>
   );
