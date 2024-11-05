@@ -1,26 +1,47 @@
 import { useEffect, useState } from 'react';
+import validator from 'validator';
 
 export default function Card({ auctions, updateAuction }) {
   const [username, setUsername] = useState('');
   const [bidAmount, setBidAmount] = useState('');
   const [auctionID, setAuctionID] = useState('');
-  const [submiting, setSubmiting] = useState(false);
-
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleClick = (e) => {
     e.preventDefault();
-    setSubmiting(true); 
+    if (!validateInputs()) {
+      return;
+    }
+    setSubmitting(true);
   };
+  
+  const validateInputs = () => {
+    setErrorMessage('');
+    
+    // Check if username is empty or not alphanumeric
+    if (validator.isEmpty(username) || !validator.isAlphanumeric(username)) {
+      setErrorMessage('Username is required and must be alphanumeric.');
+      return false;
+    }
+    
+    // Check if bidAmount is empty, a valid float, and greater than 0
+    if (validator.isEmpty(bidAmount) || !validator.isFloat(bidAmount, { min: 0.01 })) {
+      setErrorMessage('Bid amount is required and must be a number greater than 0.');
+      return false;
+    }
 
+    return true; 
+  };
 
   useEffect(() => {
     const submitBid = async () => {
-      if (!submiting) return; 
-      
+      if (!submitting) return; 
+
       const bidData = {
         usernameBD: username,
         auctionIDB: auctionID,
-        bidAmountBD: bidAmount,
+        bidAmountBD: parseFloat(bidAmount),
       };
 
       try {
@@ -36,26 +57,30 @@ export default function Card({ auctions, updateAuction }) {
 
         if (response.ok) {
           setUsername('');
-          setBidAmount(0);
+          setBidAmount('');
           setAuctionID('');
           document.getElementById('modal').close();
-          const updatedAuction = { ...auctions.find(a => a.productId === auctionID), highestBid: bidAmount };
+
+          const updatedAuction = { 
+            ...auctions.find(a => a.productId === auctionID), 
+            highestBid: bidAmount 
+          };
           updateAuction(updatedAuction);
         } else {
           document.getElementById('modal').close();
           setUsername('');
-          setBidAmount(0);
+          setBidAmount('');
           setAuctionID('');
         }
       } catch (error) {
         console.error('Error submitting bid:', error);
       } finally {
-        setSubmiting(false); 
+        setSubmitting(false); 
       }
     };
 
     submitBid();
-  }, [submiting, auctionID, username, bidAmount]);
+  }, [submitting, auctionID, username, bidAmount, auctions, updateAuction]);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-12">
@@ -65,7 +90,7 @@ export default function Card({ auctions, updateAuction }) {
             <h2 className="card-title justify-center">{auction.productName}</h2>
             <p>{auction.productDescription}</p>
             <p>Category: {auction.productCategory}</p>  
-            <p>Highest Bid:  {auction.highestBid}</p>
+            <p>Highest Bid: {auction.highestBid}</p>
             <div className="card-actions place-content-center">
               <button
                 className="btn btn-primary"
@@ -86,15 +111,19 @@ export default function Card({ auctions, updateAuction }) {
                       placeholder="Enter your bid"
                       className="input input-bordered input-warning max-w-xs mt-5"
                       value={bidAmount}
-                      onChange={(e) => setBidAmount(e.target.value)}
+                      onChange={(e) => setBidAmount(validator.isFloat(e.target.value) ? e.target.value : 0)}
+                      required
                     />
                     <input
                       type="text"
+                      id="username-input"
                       placeholder="Enter your name"
                       className="input input-bordered input-warning max-w-xs mt-5"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
+                      required
                     />
+                    <p className="text-red-500">{errorMessage}</p>
                   </div>
                   <button className="btn btn-primary mt-5 w-5/12" onClick={handleClick}>
                     Submit
