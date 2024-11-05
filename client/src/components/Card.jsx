@@ -6,13 +6,13 @@ export default function Card({ auctions }) {
 
   const handleClick = async (e, auctionID) => {
     e.preventDefault();
-  
+    const auctionIDBD = auctionID;
     const usernameBD = username;
     const bidAmountBD = Number(bidAmount);
   
     const bidData = {
       usernameBD,
-      auctionID,
+      auctionIDBD,
       bidAmountBD,
     };
   
@@ -47,8 +47,8 @@ export default function Card({ auctions }) {
             <p>{auction.productDescription}</p>
             <div className="card-actions place-content-center">
             <button className="btn btn-primary" onClick={() => document.getElementById('modal').showModal()}>
-  open modal
-</button>
+              Place a bid
+            </button>
 <dialog id='modal' className="modal">
   <div className="modal-box">
     <h3 className="font-bold text-lg">Place a bid</h3>
@@ -58,7 +58,7 @@ export default function Card({ auctions }) {
         placeholder="Enter your bid"
         className="input input-bordered input-warning max-w-xs mt-5"
         value={bidAmount}
-        onChange={(e) => setBidAmount(Number(e.target.value))}
+        onChange={(e) => setBidAmount((e.target.value))}
       />
       <input
         type="text"

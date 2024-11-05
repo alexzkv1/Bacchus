@@ -1,9 +1,14 @@
 {
   "dependencies": {
-    "axios": "^1.7.7",
+    "@sequelize/postgres": "^7.0.0-alpha.43",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.21.1",
+    "express-json": "^1.0.0",
     "node-fetch": "^3.3.2",
-    "pool": "^0.4.1"
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "pool": "^0.4.1",
+    "sequelize": "^6.37.5"
   }
 }
