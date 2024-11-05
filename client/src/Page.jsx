@@ -24,6 +24,23 @@ function App() {
     fetchPosts();
   },[]);
 
+  const updateAuction = (updatedAuction) => {
+    setAuctions((prevAuctions) => {
+      const existingAuction = prevAuctions.find(
+        (auction) => auction.productId === updatedAuction.productId
+      );
+  
+      if (updatedAuction.highestBid <= existingAuction.highestBid) {
+        return prevAuctions; 
+      }
+
+      return prevAuctions.map((auction) =>
+        auction.productId === updatedAuction.productId ? updatedAuction : auction
+      );
+    });
+  };
+
+
   if(loading){
     return (<div className="hero bg-base-200 min-h-screen">
       <div className="hero-content text-center">
@@ -53,7 +70,7 @@ function App() {
   return (
     <div className="App">
       <p className='text-5xl mt-5'>Bacchus Auctions</p>
-      <Card auctions={auctions}/>
+      <Card auctions={auctions} updateAuction={updateAuction} />
     </div>
   );
 }
