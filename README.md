@@ -1,4 +1,4 @@
-# Auction App
+# Bacchus App
 
 This is a simple auction app where users can view products and place bids.
 
