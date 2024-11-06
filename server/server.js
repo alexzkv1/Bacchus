@@ -6,23 +6,22 @@ require('dotenv').config();
 const app = express();
 const { Sequelize, DataTypes } = require('sequelize');
 const db = require('./models'); 
-const bid = require('./models/bid');
 const Bid = db.Bid;
-const PORT = 5000;
-const url = 'http://uptime-auction-api.azurewebsites.net/api/Auction';
+const PORT = process.env.PORT || 8080;
+const API_URL = process.env.API_URL;
 
 app.use(cors());
 app.use(express.json());
 
 
 
-const sequelize = new Sequelize(process.env.DATABASE_URL || 'postgres://postgres:12345678@localhost:5432/postgres');
+const sequelize = new Sequelize(process.env.DATABASE_URL|| 'postgres://postgres:12345678@localhost:5432/postgres');
 
 sequelize.sync().then(() => console.log("Database synchronized"));
 
 app.get('/data', async (req, res) => {
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(API_URL);
     const auctions = response.data;
 
     const auctionsWithHighestBids = await Promise.all(

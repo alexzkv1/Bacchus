@@ -1,6 +1,3 @@
-import { useEffect, useState } from "react";
-
-
 export default function DropDown({categories, filterAuctions}){
 
     return(
@@ -19,6 +16,5 @@ export default function DropDown({categories, filterAuctions}){
     ))}
   </ul>
 </div>
-
     )
 };  

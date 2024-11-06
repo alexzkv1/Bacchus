@@ -7,7 +7,7 @@ export default function Card({ auctions, updateAuction }) {
   const [auctionID, setAuctionID] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
+  const apiUrl = process.env.REACT_APP_BASE_URL;
   const handleClick = (e) => {
     e.preventDefault();
     if (!validateInputs()) {
@@ -20,12 +20,12 @@ export default function Card({ auctions, updateAuction }) {
     setErrorMessage('');
     
     if (validator.isEmpty(username) || !validator.isAlphanumeric(username)) {
-      setErrorMessage('Username is required and must be alphanumeric.');
+      setErrorMessage('Username is required and must be alphanumeric');
       return false;
     }
     
     if (validator.isEmpty(bidAmount) || !validator.isFloat(bidAmount, { min: 0.01 })) {
-      setErrorMessage('Bid amount is required and must be a number greater than 0.');
+      setErrorMessage('Bid amount is required and must be a number greater than 0');
       return false;
     }
 
@@ -43,7 +43,7 @@ export default function Card({ auctions, updateAuction }) {
       };
 
       try {
-        const response = await fetch('http://localhost:5000/place-bid', {
+        const response = await fetch(`${apiUrl}/place-bid`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -68,7 +68,6 @@ export default function Card({ auctions, updateAuction }) {
           setUsername('');
           setBidAmount('');
           setAuctionID('');
-          alert('Error submitting bid. Please try again.');
         }
       } catch (error) {
         console.error('Error submitting bid:', error);
@@ -84,7 +83,7 @@ export default function Card({ auctions, updateAuction }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-12 mx-3">
       {auctions.map((auction) => (
-        <div className="card bg-base-200 shadow-2xl" key={auction.productId} id={auction.productId}>
+        <div className="card bg-base-200 shadow-2xl" key={auction.productId} id={`card-${auction.productId}`}>
           <div className="card-body">
             <h2 className="card-title justify-center">{auction.productName}</h2>
             <p>{auction.productDescription}</p>
@@ -97,12 +96,10 @@ export default function Card({ auctions, updateAuction }) {
                   setAuctionID(auction.productId);
                   document.getElementById('modal').showModal(); 
                 }}
-              >
-                Place a bid
-              </button>
+              >Place a bid</button>
               <dialog id="modal" className="modal">
                 <div className="modal-box">
-                  <h3 className="font-bold text-lg">Place a bid</h3>
+                  <p className="font-bold text-lg">Place a bid</p>
                   <div className="grid grid-cols-2 gap-4">
                     <input
                       id="bid-input"
@@ -123,7 +120,9 @@ export default function Card({ auctions, updateAuction }) {
                       required
                     />
                   </div>
-                  <p className="text-red-500 justify-center mt-5">{errorMessage || auction.message}</p>
+                  <p className="text-red-500 justify-center mt-5" role="alert">
+                    {errorMessage || auction.message}
+                  </p>
                   <button className="btn btn-secondary mt-5 w-5/12" onClick={handleClick}>
                     Submit
                   </button>

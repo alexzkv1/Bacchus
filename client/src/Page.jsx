@@ -4,7 +4,7 @@ import Card from './components/Card';
 import DropDown from './components/dropDown';
 
 function App() {
-  const url = 'http://uptime-auction-api.azurewebsites.net/api/Auction';
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setErrror] = useState();
@@ -13,10 +13,11 @@ function App() {
 
 
   useEffect(() =>{
+    
     const fetchPosts = async () => {
       try{
         setLoading(true);
-        const response = await fetch('http://localhost:5000/data');
+        const response = await fetch(`${BASE_URL}/data`);
         const auctionData = await response.json();
         setAuctions(auctionData)
       } catch(err){
