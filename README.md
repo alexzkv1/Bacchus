@@ -43,17 +43,3 @@ REACT_APP_API_URL=http://localhost:5000
 cd server
 node server.js
 ```
-
-2. And then to the client directory
-```bash 
-
-cd ../client
-npm run start
-```
-
-### How to Run Tests
-1. Navigate to client directory and run test from command line:
-```bash
-cd client
-npm test 
-```
