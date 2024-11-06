@@ -3,7 +3,7 @@ import validator from 'validator';
 
 export default function Card({ auctions, updateAuction }) {
   const [username, setUsername] = useState('');
-  const [bidAmount, setBidAmount] = useState(0);
+  const [bidAmount, setBidAmount] = useState('');
   const [auctionID, setAuctionID] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -55,7 +55,7 @@ export default function Card({ auctions, updateAuction }) {
 
         if (response.ok) {
           setUsername('');
-          setBidAmount(0);
+          setBidAmount('');
           setAuctionID('');
           document.getElementById('modal').close();
 
@@ -66,7 +66,7 @@ export default function Card({ auctions, updateAuction }) {
           updateAuction(updatedAuction);
         } else {
           setUsername('');
-          setBidAmount(0);
+          setBidAmount('');
           setAuctionID('');
           alert('Error submitting bid. Please try again.');
         }
@@ -82,7 +82,7 @@ export default function Card({ auctions, updateAuction }) {
   }, [submitting, auctionID, username, bidAmount, auctions, updateAuction]);
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-12">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mt-12 mx-3">
       {auctions.map((auction) => (
         <div className="card bg-base-200 shadow-2xl" key={auction.productId} id={auction.productId}>
           <div className="card-body">
@@ -92,7 +92,7 @@ export default function Card({ auctions, updateAuction }) {
             <p>Highest Bid: {auction.highestBid}</p>
             <div className="card-actions place-content-center">
               <button
-                className="btn btn-primary"
+                className="btn btn-accent"
                 onClick={() => {
                   setAuctionID(auction.productId);
                   document.getElementById('modal').showModal(); 
@@ -124,7 +124,7 @@ export default function Card({ auctions, updateAuction }) {
                     />
                   </div>
                   <p className="text-red-500 justify-center mt-5">{errorMessage || auction.message}</p>
-                  <button className="btn btn-primary mt-5 w-5/12" onClick={handleClick}>
+                  <button className="btn btn-secondary mt-5 w-5/12" onClick={handleClick}>
                     Submit
                   </button>
                 </div>

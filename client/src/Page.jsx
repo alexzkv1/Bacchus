@@ -89,14 +89,19 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <DropDown categories={categories} filterAuctions={filterAuctions} />
-      <p className="text-5xl font-bold mt-5 text-center  tracking-wide shadow-lg drop-shadow-md">
+<div className="App">
+    <div className='flex  justify-start'>
+    <DropDown categories={categories} filterAuctions={filterAuctions} />
+    </div>
+  <div className="flex items-center justify-center">
+    <p className="text-5xl font-bold text-center tracking-wide drop-shadow-lg shadow-sm">
       Bacchus Auctions
     </p>
+  </div>
 
-      <Card auctions={filteredAuctions} updateAuction={updateAuction} />
-    </div>
+  <Card auctions={filteredAuctions} updateAuction={updateAuction} />
+</div>
+
   );
 }
 
