@@ -34,19 +34,29 @@ node server.js
 In the server directory, create a .env file:
 ```bash
 
-PORT=5000
-DB_HOST=localhost
-DB_USER=username
-DB_PASSWORD=password
-DB_NAME=auction_db
+PORT=
+DATABASE_URL=
+API_URL=
 ```
+
+###### Example Database connection:
+```bash
+DATABASE_URL=postgres://your_username:your_password@localhost:5432/your_database_name
+```
+
+
 
 2. For the client
 In the client directory, create a .env file:
 ```bash 
-REACT_APP_API_URL=http://localhost:5000
+REACT_APP_API_URL=
 ```
 
+3. Setting Database
+In the server directory, run:
+```bash
+npm run sequelize db:migrate
+```
 
 ### Tests
 1. Navigate to client directory and run test from command line:
