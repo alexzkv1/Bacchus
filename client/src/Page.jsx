@@ -8,6 +8,7 @@ function App() {
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setErrror] = useState();
+  const [filteredAuctions, setFilteredAuctions] = useState([]);
   const [categories, setCategories] = useState([]);
 
 
@@ -27,6 +28,13 @@ function App() {
     fetchPosts();
   },[]);
 
+
+  useEffect(() => {
+    const categoriesDb = [...new Set(auctions.map(auction => auction.productCategory))];
+    setCategories(['All', ...categoriesDb]);
+    setFilteredAuctions(auctions);
+  }, [auctions]);
+
   const updateAuction = (updatedAuction) => {
     setAuctions((prevAuctions) => {
       const existingAuction = prevAuctions.find(
@@ -41,6 +49,16 @@ function App() {
         auction.productId === updatedAuction.productId ? updatedAuction : auction
       );
     });
+  };
+
+  const filterAuctions = (e) => {
+    const category = e.target.closest('li').id;
+    const filtered = category === "All" 
+      ? auctions 
+      : auctions.filter((auction) => auction.productCategory === category);
+  
+    console.log(filtered);
+    setFilteredAuctions(filtered);
   };
 
 
@@ -72,12 +90,12 @@ function App() {
 
   return (
     <div className="App">
-      <DropDown auctions={auctions} />
+      <DropDown categories={categories} filterAuctions={filterAuctions} />
       <p className="text-5xl font-bold mt-5 text-center  tracking-wide shadow-lg drop-shadow-md">
       Bacchus Auctions
     </p>
 
-      <Card auctions={auctions} updateAuction={updateAuction} />
+      <Card auctions={filteredAuctions} updateAuction={updateAuction} />
     </div>
   );
 }
