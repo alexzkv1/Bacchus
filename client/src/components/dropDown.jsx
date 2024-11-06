@@ -1,9 +1,9 @@
 export default function DropDown({categories, filterAuctions}){
 
     return(
-        <div className="dropdown dropdown-right">
+        <div className="dropdown dropdown-hover dropdown-right">
   <div tabIndex={0} role="button" className="btn m-1 btn-active text-lg font-medium shadow-md">
-    Hover
+    Categories
   </div>
   <ul
     tabIndex={0}
