@@ -3,7 +3,7 @@ import validator from 'validator';
 
 export default function Card({ auctions, updateAuction }) {
   const [username, setUsername] = useState('');
-  const [bidAmount, setBidAmount] = useState('');
+  const [bidAmount, setBidAmount] = useState(0);
   const [auctionID, setAuctionID] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -19,13 +19,11 @@ export default function Card({ auctions, updateAuction }) {
   const validateInputs = () => {
     setErrorMessage('');
     
-    // Check if username is empty or not alphanumeric
     if (validator.isEmpty(username) || !validator.isAlphanumeric(username)) {
       setErrorMessage('Username is required and must be alphanumeric.');
       return false;
     }
     
-    // Check if bidAmount is empty, a valid float, and greater than 0
     if (validator.isEmpty(bidAmount) || !validator.isFloat(bidAmount, { min: 0.01 })) {
       setErrorMessage('Bid amount is required and must be a number greater than 0.');
       return false;
@@ -57,7 +55,7 @@ export default function Card({ auctions, updateAuction }) {
 
         if (response.ok) {
           setUsername('');
-          setBidAmount('');
+          setBidAmount(0);
           setAuctionID('');
           document.getElementById('modal').close();
 
@@ -67,13 +65,14 @@ export default function Card({ auctions, updateAuction }) {
           };
           updateAuction(updatedAuction);
         } else {
-          document.getElementById('modal').close();
           setUsername('');
-          setBidAmount('');
+          setBidAmount(0);
           setAuctionID('');
+          alert('Error submitting bid. Please try again.');
         }
       } catch (error) {
         console.error('Error submitting bid:', error);
+        alert('Error submitting bid. Please try again.');
       } finally {
         setSubmitting(false); 
       }
@@ -123,8 +122,8 @@ export default function Card({ auctions, updateAuction }) {
                       onChange={(e) => setUsername(e.target.value)}
                       required
                     />
-                    <p className="text-red-500">{errorMessage}</p>
                   </div>
+                  <p className="text-red-500 justify-center mt-5">{errorMessage || auction.message}</p>
                   <button className="btn btn-primary mt-5 w-5/12" onClick={handleClick}>
                     Submit
                   </button>

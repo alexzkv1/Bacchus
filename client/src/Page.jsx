@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import './Page.css';
-import Card from './components/Card'
+import Card from './components/Card';
+import DropDown from './components/dropDown';
 
 function App() {
   const url = 'http://uptime-auction-api.azurewebsites.net/api/Auction';
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setErrror] = useState();
+  const [categories, setCategories] = useState([]);
+
 
   useEffect(() =>{
     const fetchPosts = async () => {
@@ -69,7 +72,11 @@ function App() {
 
   return (
     <div className="App">
-      <p className='text-5xl mt-5'>Bacchus Auctions</p>
+      <DropDown auctions={auctions} />
+      <p className="text-5xl font-bold mt-5 text-center  tracking-wide shadow-lg drop-shadow-md">
+      Bacchus Auctions
+    </p>
+
       <Card auctions={auctions} updateAuction={updateAuction} />
     </div>
   );
