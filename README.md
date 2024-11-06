@@ -43,3 +43,9 @@ REACT_APP_API_URL=http://localhost:5000
 cd server
 node server.js
 ```
+
+2. Navigate to the client direcory and run:
+```bash
+cd ../client
+npm run build
+npm run start
